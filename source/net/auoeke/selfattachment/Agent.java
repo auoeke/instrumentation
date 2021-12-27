@@ -15,6 +15,7 @@ public class Agent {
     public static Instrumentation instrumentation;
 
     public static void main(String[] args) throws Throwable {
+        // Attach the agent.
         bootstrap();
 
         Transformer transformer = (module, loader, name, type, domain, bytecode) -> {
@@ -48,6 +49,11 @@ public class Agent {
         Agent.instrumentation = instrumentation;
     }
 
+    /**
+     Enable self-attachment for this VM and attach the agent.
+     <p>
+     <b>Must not be invoked during main class initialization.</b>
+     */
     private static void bootstrap() throws Throwable {
         var VM = Class.forName("jdk.internal.misc.VM");
         var theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");

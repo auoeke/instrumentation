@@ -19,6 +19,7 @@ dependencies {
     implementation("org.ow2.asm:asm-tree:9.2")
 }
 
+// Generate an agent JAR for VirtualMachine#loadAgent. The agent class is the main class.
 task agent(type: Jar) {
     manifest {
         attributes(
