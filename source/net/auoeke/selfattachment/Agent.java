@@ -17,7 +17,27 @@ public class Agent {
     public static void main(String[] args) throws Throwable {
         // Attach the agent.
         bootstrap();
+        transform();
+    }
 
+    /**
+     Enable self-attachment for this VM and attach the agent.
+     <p>
+     <b>Must not be invoked during main class initialization.</b>
+     */
+    private static void bootstrap() throws Throwable {
+        var VM = Class.forName("jdk.internal.misc.VM");
+        var theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
+        theUnsafe.trySetAccessible();
+        var unsafe = (Unsafe) theUnsafe.get(null);
+        ((Map<String, String>) unsafe.getObject(VM, unsafe.staticFieldOffset(VM.getDeclaredField("savedProps")))).put("jdk.attach.allowAttachSelf", "true");
+
+        var vm = VirtualMachine.attach(String.valueOf(ManagementFactory.getRuntimeMXBean().getPid()));
+        vm.loadAgent("agent.jar");
+        vm.detach();
+    }
+
+    private static void transform() throws Throwable {
         Transformer transformer = (module, loader, name, type, domain, bytecode) -> {
             if (!name.equals("java/lang/Object")) {
                 return bytecode;
@@ -47,22 +67,5 @@ public class Agent {
 
     public static void agentmain(String options, Instrumentation instrumentation) {
         Agent.instrumentation = instrumentation;
-    }
-
-    /**
-     Enable self-attachment for this VM and attach the agent.
-     <p>
-     <b>Must not be invoked during main class initialization.</b>
-     */
-    private static void bootstrap() throws Throwable {
-        var VM = Class.forName("jdk.internal.misc.VM");
-        var theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
-        theUnsafe.trySetAccessible();
-        var unsafe = (Unsafe) theUnsafe.get(null);
-        ((Map<String, String>) unsafe.getObject(VM, unsafe.staticFieldOffset(VM.getDeclaredField("savedProps")))).put("jdk.attach.allowAttachSelf", "true");
-
-        var vm = VirtualMachine.attach(String.valueOf(ManagementFactory.getRuntimeMXBean().getPid()));
-        vm.loadAgent("agent.jar");
-        vm.detach();
     }
 }
