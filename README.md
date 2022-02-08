@@ -13,9 +13,9 @@ so the options are
 
 Option #1 is expensive.<br>
 Option #2 is unfeasible in many environments.<br>
-Option #3 is neither but [its effectiveness is subject to change](https://github.com/openjdk/jdk/blob/83d67452da248db17bc72de80247a670d6813cf5/src/jdk.attach/share/classes/sun/tools/attach/HotSpotVirtualMachine.java#L76-L77).
+Option #3 is neither of but it is less reliable than the above and [its effectiveness is subject to change](https://github.com/openjdk/jdk/blob/83d67452da248db17bc72de80247a670d6813cf5/src/jdk.attach/share/classes/sun/tools/attach/HotSpotVirtualMachine.java#L76-L77).
 
-This project addresses option #3.
+This project addresses option #3 for most environments and with the least overhead.
 
 ### Attachment
 This repository contains the attachment code and an example.
