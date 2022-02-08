@@ -19,7 +19,7 @@ This project addresses option #3.
 
 ### Attachment
 This repository contains the attachment code and an example.
-The attachment code is duplicated below; the remainder can be found in [Agent.java](source/Agent.java).
+The attachment code is duplicated below; the remainder can be found in [`Agent.java`](source/Agent.java).
 ```java
 var VM = Class.forName("jdk.internal.misc.VM");
 var unsafe = (Unsafe) MethodHandles.privateLookupIn(Unsafe.class, MethodHandles.lookup()).findStaticVarHandle(Unsafe.class, "theUnsafe", Unsafe.class).get();
