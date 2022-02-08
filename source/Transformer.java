@@ -1,5 +1,3 @@
-package net.auoeke.selfattachment;
-
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;

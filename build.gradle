@@ -19,11 +19,11 @@ dependencies {
     implementation("org.ow2.asm:asm-tree:9.2")
 }
 
-// Generate an agent JAR for VirtualMachine#loadAgent. The agent class is the main class.
+// Generate a minimal agent JAR with all capabilities for VirtualMachine#loadAgent. The agent class is the main class.
 task agent(type: Jar) {
     manifest {
         attributes(
-            "Agent-Class": "net.auoeke.selfattachment.Agent",
+            "Agent-Class": "Agent",
             "Can-Redefine-Classes": "true",
             "Can-Retransform-Classes": "true",
             "Can-Set-Native-Method-Prefix": "true"

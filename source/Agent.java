@@ -1,10 +1,9 @@
-package net.auoeke.selfattachment;
-
-import com.sun.tools.attach.VirtualMachine;
 import java.lang.instrument.Instrumentation;
+import java.lang.invoke.MethodHandles;
 import java.lang.management.ManagementFactory;
 import java.util.Map;
 import java.util.stream.Stream;
+import com.sun.tools.attach.VirtualMachine;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -23,13 +22,11 @@ public class Agent {
     /**
      Enable self-attachment for this VM and attach the agent.
      <p>
-     <b>Must not be invoked during main class initialization.</b>
+     Must not be invoked during main class initialization.
      */
     private static void bootstrap() throws Throwable {
         var VM = Class.forName("jdk.internal.misc.VM");
-        var theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
-        theUnsafe.trySetAccessible();
-        var unsafe = (Unsafe) theUnsafe.get(null);
+        var unsafe = (Unsafe) MethodHandles.privateLookupIn(Unsafe.class, MethodHandles.lookup()).findStaticVarHandle(Unsafe.class, "theUnsafe", Unsafe.class).get();
         ((Map<String, String>) unsafe.getObject(VM, unsafe.staticFieldOffset(VM.getDeclaredField("savedProps")))).put("jdk.attach.allowAttachSelf", "true");
 
         var vm = VirtualMachine.attach(String.valueOf(ManagementFactory.getRuntimeMXBean().getPid()));
@@ -37,9 +34,15 @@ public class Agent {
         vm.detach();
     }
 
+    /**
+     Test whether instrumentation works by transforming {@code Object::toString} to always return {@code "transformation marker"}
+     and asserting that {@link Object#toString} returns it for 10 new {@link Object}s.
+     */
     private static void transform() throws Throwable {
+        var string = "transformation marker";
+
         Transformer transformer = (module, loader, name, type, domain, bytecode) -> {
-            if (!name.equals("java/lang/Object")) {
+            if (type != Object.class) {
                 return bytecode;
             }
 
@@ -48,7 +51,7 @@ public class Agent {
 
             node.methods.stream().filter(method -> method.name.equals("toString")).findAny().ifPresent(method -> {
                 method.instructions.clear();
-                method.visitLdcInsn("transformation marker");
+                method.visitLdcInsn(string);
                 method.visitInsn(Opcodes.ARETURN);
             });
 
@@ -62,7 +65,9 @@ public class Agent {
         instrumentation.retransformClasses(Object.class);
         instrumentation.removeTransformer(transformer);
 
-        Stream.generate(Object::new).limit(10).forEach(System.out::println);
+        if (!Stream.generate(Object::new).limit(10).peek(System.out::println).map(o -> string.equals(o.toString())).reduce(true, Boolean::logicalAnd)) {
+            throw new AssertionError();
+        }
     }
 
     public static void agentmain(String options, Instrumentation instrumentation) {
