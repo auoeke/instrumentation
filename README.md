@@ -31,6 +31,6 @@ vm.detach();
 ```
 
 ### Testing
-The task `agent` produces a minimal agent JAR `agent.jar` with all capabilities for testing in development environments.
+The Gradle task `agent` produces a minimal agent JAR `agent.jar` with all capabilities for testing in development environments.
 
 The test is in `Agent::transform`.
