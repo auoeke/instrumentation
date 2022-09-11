@@ -65,7 +65,7 @@ public class Agent {
         instrumentation.retransformClasses(Object.class);
         instrumentation.removeTransformer(transformer);
 
-        if (!Stream.generate(Object::new).limit(10).peek(System.out::println).map(o -> string.equals(o.toString())).reduce(true, Boolean::logicalAnd)) {
+        if (!Stream.generate(Object::new).limit(10).peek(System.out::println).allMatch(o -> string.equals(o.toString()))) {
             throw new AssertionError();
         }
     }
