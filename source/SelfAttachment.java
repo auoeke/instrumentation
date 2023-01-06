@@ -9,7 +9,7 @@ public class SelfAttachment {
 	}
 
 	/**
-	 Enable self-attachment for this VM and attach the agent.
+	 Enable self-attachment for this VM and load the agent.
 	 <p>
 	 Must not be invoked during main class initialization.
 	 */
