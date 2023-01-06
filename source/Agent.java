@@ -22,11 +22,7 @@ public class Agent {
         var string = "transformation marker";
 
         Transformer transformer = (module, loader, name, type, domain, classFile) -> {
-            if (type != Object.class) {
-                return null;
-            }
-
-            try {
+            if (type == Object.class) try {
                 var node = new ClassNode();
                 new ClassReader(classFile).accept(node, 0);
 
@@ -43,9 +39,9 @@ public class Agent {
             } catch (Throwable trouble) {
                 trouble.printStackTrace();
                 System.exit(1);
-
-                return null;
             }
+
+            return null;
         };
 
         instrumentation.addTransformer(transformer, true);
