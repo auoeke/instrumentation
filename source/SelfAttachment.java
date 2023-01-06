@@ -1,4 +1,3 @@
-import java.lang.management.ManagementFactory;
 import java.util.Map;
 import com.sun.tools.attach.VirtualMachine;
 
@@ -18,7 +17,7 @@ public class SelfAttachment {
 		var unsafe = Agent.unsafe();
 		((Map<String, String>) unsafe.getObject(VM, unsafe.staticFieldOffset(VM.getDeclaredField("savedProps")))).put("jdk.attach.allowAttachSelf", "true");
 
-		var vm = VirtualMachine.attach(String.valueOf(ManagementFactory.getRuntimeMXBean().getPid()));
+		var vm = VirtualMachine.attach(String.valueOf(ProcessHandle.current().pid()));
 		vm.loadAgent("agent.jar");
 		vm.detach();
 	}
