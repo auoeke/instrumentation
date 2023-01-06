@@ -1,34 +1,34 @@
 plugins {
-    id("java")
+	id("java")
 }
 
 sourceCompatibility = 17
 targetCompatibility = 17
 
 sourceSets {
-    main.java.srcDirs = ["source"]
+	main.java.srcDirs = ["source"]
 }
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    implementation("org.ow2.asm:asm-tree:latest.release")
+	implementation("org.ow2.asm:asm-tree:latest.release")
 }
 
 // Generate a minimal agent JAR with all capabilities for VirtualMachine#loadAgent.
 task agent(type: Jar) {
-    manifest {
-        attributes(
-            "Agent-Class": "Agent",
-            "Launcher-Agent-Class": "Agent",
-            "Can-Redefine-Classes": "true",
-            "Can-Retransform-Classes": "true",
-            "Can-Set-Native-Method-Prefix": "true"
-        )
-    }
+	manifest {
+		attributes(
+			"Agent-Class": "Agent",
+			"Launcher-Agent-Class": "Agent",
+			"Can-Redefine-Classes": "true",
+			"Can-Retransform-Classes": "true",
+			"Can-Set-Native-Method-Prefix": "true"
+		)
+	}
 
-    destinationDirectory.set(projectDir)
-    archiveFileName.set("agent.jar")
+	destinationDirectory.set(projectDir)
+	archiveFileName.set("agent.jar")
 }
