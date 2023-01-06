@@ -17,7 +17,7 @@ The methods of loading an agent are several:
 
 The goal of this project is balancing performance, implementation effort and universality.
 
-Initially I had implemented only option 4.2. Later I discovered option 5 which I have since implemented too.
+Initially this project was about method 4.2. Later I discovered method 5 which I have since implemented too.
 
 This repository contains the attachment code and an example.
 The attachment code is duplicated below; the remainder can be found in [`Agent.java`](source/Agent.java),
